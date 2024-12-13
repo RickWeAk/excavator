@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Cultivator Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header -->
+    <header class="bg-green-600 p-4">
+        <div class="container mx-auto text-white text-center">
+            <h1 class="text-3xl font-semibold">Cultivator Store - Cart</h1>
+        </div>
+    </header>
+
+    <!-- Cart Items -->
+    <div class="container mx-auto p-6">
+        <div id="cartItems" class="space-y-4">
+            <!-- Cart items will be dynamically generated here -->
+        </div>
+        <div class="mt-6 text-right">
+            <p class="text-lg font-semibold">Total: $<span id="totalPrice">0.00</span></p>
+        </div>
+        <div class="mt-6 text-center">
+            <button onclick="checkout()" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 text-center">
+        <p>&copy; 2024 Cultivator Store. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Load the cart from localStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Function to render cart items
+        function renderCart() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `<p class="text-center text-xl">Your cart is empty.</p>`;
+            }
+
+            cart.forEach(item => {
+                const cartItemHTML = `
+                    <div class="bg-white p-4 rounded-lg shadow-lg flex justify-between items-center">
+                        <div>
+                            <h3 class="text-xl font-semibold">${item.name}</h3>
+                            <p class="text-lg text-green-600">$${item.price}</p>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="bg-red-600 text-white py-1 px-3 rounded-lg hover:bg-red-700">Remove</button>
+                    </div>
+                `;
+                cartItemsContainer.innerHTML += cartItemHTML;
+                total += item.price;
+            });
+
+            document.getElementById('totalPrice').innerText = total.toFixed(2);
+        }
+
+        // Function to remove an item from the cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        // Checkout function
+        function checkout() {
+            // You can handle checkout logic here (e.g., payment integration)
+            if (cart.length === 0) {
+                alert('Your cart is empty. Please add items to your cart before proceeding to checkout.');
+                return;
+            }
+            alert('Proceeding to checkout!');
+            // Clear cart after checkout (for demonstration purposes)
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        // Initial render
+        renderCart();
+    </script>
+</body>
+</html>
